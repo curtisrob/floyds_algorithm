@@ -38,6 +38,3 @@ def floyd(input_graph):
 
 
 shortest_path = floyd(graph)
-
-# print(test_graph)
-# print(shortest_path)
