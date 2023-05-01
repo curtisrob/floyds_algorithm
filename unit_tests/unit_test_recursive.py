@@ -1,6 +1,6 @@
 import unittest
 import sys
-from imperative_floyd import floyd
+from recursive_floyd import floyd_recursive
 
 
 NO_PATH = sys.maxsize
@@ -14,7 +14,7 @@ class TestFloydImperative(unittest.TestCase):
         The expected behavior is that the input test_graph is not modified.
         """
         test_graph = []
-        shortest_path = floyd(test_graph)
+        shortest_path = floyd_recursive(test_graph)
         self.assertEqual(shortest_path, [])
 
     def test_single_node_test_graph(self):
@@ -24,7 +24,7 @@ class TestFloydImperative(unittest.TestCase):
         The expected behavior is that the input test_graph is not modified.
         """
         test_graph = [[0]]
-        shortest_path = floyd(test_graph)
+        shortest_path = floyd_recursive(test_graph)
         self.assertEqual(shortest_path, [[0]])
 
     def test_disconnected_test_graph(self):
@@ -33,9 +33,16 @@ class TestFloydImperative(unittest.TestCase):
 
         The expected behavior is that the input test_graph is not modified.
         """
-        test_graph = [[0, NO_PATH, NO_PATH], [NO_PATH, 0, NO_PATH], [NO_PATH, NO_PATH, 0]]
-        shortest_path = floyd(test_graph)
-        self.assertEqual(shortest_path, [[0, NO_PATH, NO_PATH], [NO_PATH, 0, NO_PATH], [NO_PATH, NO_PATH, 0]])
+        test_graph = [
+            [0, NO_PATH, NO_PATH],
+            [NO_PATH, 0, NO_PATH],
+            [NO_PATH, NO_PATH, 0],
+        ]
+        shortest_path = floyd_recursive(test_graph)
+        self.assertEqual(
+            shortest_path,
+            [[0, NO_PATH, NO_PATH], [NO_PATH, 0, NO_PATH], [NO_PATH, NO_PATH, 0]],
+        )
 
     def test_shortest_paths_on_simple_test_graph(self):
         """
@@ -49,7 +56,7 @@ class TestFloydImperative(unittest.TestCase):
             [NO_PATH, NO_PATH, 0, 2],
             [NO_PATH, NO_PATH, NO_PATH, 0],
         ]
-        shortest_path = floyd(test_graph)
+        shortest_path = floyd_recursive(test_graph)
         self.assertEqual(
             shortest_path,
             [
@@ -68,7 +75,7 @@ class TestFloydImperative(unittest.TestCase):
         even with the negative weight cycle.
         """
         test_graph = [[0, 1, NO_PATH], [NO_PATH, 0, -1], [1, NO_PATH, 0]]
-        shortest_path = floyd(test_graph)
+        shortest_path = floyd_recursive(test_graph)
         self.assertEqual(shortest_path, [[0, 1, -1], [NO_PATH, 0, -2], [1, 2, 0]])
 
     def test_floating_point_weights(self):
@@ -78,12 +85,15 @@ class TestFloydImperative(unittest.TestCase):
         The expected behavior is that the input test_graph is modified to contain the correct shortest path distances.
         """
         test_graph = [[0, 0.5, 0.25], [0.5, 0, 0.75], [0.25, 0.75, 0]]
-        shortest_path = floyd(test_graph)
+
+        shortest_path = floyd_recursive(test_graph)
+
         self.assertAlmostEqual(shortest_path[0][2], 0.5)
         self.assertAlmostEqual(shortest_path[1][2], 0.25)
         self.assertAlmostEqual(shortest_path[2][0], 0.5)
         self.assertAlmostEqual(shortest_path[2][1], 0.75)
         self.assertAlmostEqual(shortest_path[2][2], 0)
+
 
 if __name__ == "__main__":
     unittest.main()
